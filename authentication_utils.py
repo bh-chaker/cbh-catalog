@@ -4,8 +4,10 @@ from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 
 from database_utils import createUser, getUserID, getUser
 
+CLIENT_SECRETS_PATH = '/var/www/catalog/client_secrets.json'
+
 GOOGLE_CLIENT_ID = json.loads(
-  open('/var/www/catalog/client_secrets.json', 'r').read())['web']['client_id']
+  open(CLIENT_SECRETS_PATH, 'r').read())['web']['client_id']
 
 def generate_random_string ( length ):
   """Generates and returns a random string."""
@@ -37,7 +39,7 @@ def gconnect(login_session, request):
   code = request.form['code']
   try:
     # Upgrade the authorization code into a credentials object
-    oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+    oauth_flow = flow_from_clientsecrets(CLIENT_SECRETS_PATH, scope='')
     oauth_flow.redirect_uri = 'postmessage'
     credentials = oauth_flow.step2_exchange(code)
   except FlowExchangeError:
