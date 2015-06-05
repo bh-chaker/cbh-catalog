@@ -5,7 +5,7 @@ from flask import session as login_session
 
 import json
 
-from authentication_utils import init_csrf_token, check_csrf_token, gconnect, gdisconnect
+from authentication_utils import init_csrf_token, check_csrf_token, gconnect, gdisconnect, GOOGLE_CLIENT_ID
 from database_utils import getCategories, getCategory, getItems, getItem, addItem, updateItem, removeItem
 
 @app.before_request
@@ -44,14 +44,14 @@ def categorieJSON():
 def showCatalog():
   """Show list of Categories. This is home page."""
   categories = getCategories()
-  return render_template('catalog.html', categories = categories)
+  return render_template('catalog.html', categories = categories, GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID)
 
 @app.route('/catalog/<category_name>/')
 def showCategory(category_name):
   """Show list of Items of a Category"""
   category = getCategory(category_name)
   items = getItems(category_name)
-  return render_template('category.html', items = items, category = category)
+  return render_template('category.html', items = items, category = category, GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID)
 
 @app.route('/catalog/<category_name>/new/', methods=['GET','POST'])
 def newItem(category_name):
@@ -78,19 +78,19 @@ def newItem(category_name):
       return redirect(url_for('showCategory', category_name = request.form['category_name']))
     else:
       flash('The name %s is already used in this category!' % (request.form['name']), 'danger')
-      return render_template('itemForm.html', categories = categories, category = category)
+      return render_template('itemForm.html', categories = categories, category = category, GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID)
 
   else:
     #Display the form in case of GET request
     category = getCategory(category_name)
-    return render_template('itemForm.html', categories = categories, category = category)
+    return render_template('itemForm.html', categories = categories, category = category, GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID)
 
 @app.route('/catalog/<category_name>/item/<item_name>/', methods=['GET'])
 def showItem(category_name, item_name):
   """Show an Item"""
   item = getItem(category_name, item_name)
   category = getCategory(category_name)
-  return render_template('item.html', category = category, item = item)
+  return render_template('item.html', category = category, item = item, GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID)
 
 #Edit an item
 @app.route('/catalog/<category_name>/item/<item_name>/edit', methods=['GET','POST'])
@@ -115,7 +115,7 @@ def editItem(category_name, item_name):
       return redirect(url_for('editItem', category_name = category_name, item_name=item_name))
   else:
     #Display the form in case of GET request
-    return render_template('itemForm.html', categories = getCategories(), category = category, item_name = item_name, item = item)
+    return render_template('itemForm.html', categories = getCategories(), category = category, item_name = item_name, item = item, GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID)
 
 @app.route('/catalog/<category_name>/item/<item_name>/delete', methods = ['GET','POST'])
 def deleteItem(category_name,item_name):
@@ -135,7 +135,7 @@ def deleteItem(category_name,item_name):
     return redirect(url_for('showCategory', category_name = category_name))
   else:
     #Display the form in case of GET request
-    return render_template('deleteItem.html', category = category, item = itemToDelete)
+    return render_template('deleteItem.html', category = category, item = itemToDelete, GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID)
 
 
 @app.route('/connect', methods=['POST'])

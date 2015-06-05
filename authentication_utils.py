@@ -4,6 +4,9 @@ from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 
 from database_utils import createUser, getUserID, getUser
 
+GOOGLE_CLIENT_ID = json.loads(
+  open('client_secrets.json', 'r').read())['web']['client_id']
+
 def generate_random_string ( length ):
   """Generates and returns a random string."""
   return ''.join(random.choice(string.ascii_uppercase + string.digits)
@@ -57,8 +60,6 @@ def gconnect(login_session, request):
     return "Token's user ID doesn't match given user ID.", 401
 
   # Verify that the access token is valid for this app.
-  GOOGLE_CLIENT_ID = json.loads(
-  open('client_secrets.json', 'r').read())['web']['client_id']
   if result['issued_to'] != GOOGLE_CLIENT_ID:
     return "Token's client ID does not match app's.", 401
 
