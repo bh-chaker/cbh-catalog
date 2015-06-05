@@ -5,7 +5,7 @@ from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 from database_utils import createUser, getUserID, getUser
 
 GOOGLE_CLIENT_ID = json.loads(
-  open('client_secrets.json', 'r').read())['web']['client_id']
+  open('/var/www/catalog/client_secrets.json', 'r').read())['web']['client_id']
 
 def generate_random_string ( length ):
   """Generates and returns a random string."""
